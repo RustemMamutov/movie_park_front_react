@@ -1,5 +1,8 @@
+import {MovieInfo, SeanceInfo, SeancePlace} from "./data-structures";
+import {OPERATOR_CREDS} from "./constants";
 import GeneralUtils from "./general-utils";
 import httpClient from "./http-client";
+
 const getSeanceInfoUrl: string = '/seances/info';
 const getSeancePlacesInfoUrl: string = '/seances/places/info';
 const blockPlaceUrl: string = '/seances/places/block';
@@ -12,83 +15,17 @@ function log(...args: any[]) {
     GeneralUtils.log("ApiMethods", ...args);
 }
 
-class SeanceInfo {
-    seanceId: number;
-    seanceDate: string;
-    startTime: string;
-    endTime: string;
-    movieParkId: number;
-    movieParkName: string;
-    movieId: number;
-    movieName: string;
-    hallId: number;
-    basePrice: number;
-    vipPrice: number;
-
-    constructor(seanceId: number, seanceDate: string,
-                startTime: string, endTime: string,
-                movieParkId: number, movieParkName: string,
-                movieId: number, movieName: string,
-                hallId: number, basePrice: number,
-                vipPrice: number) {
-        this.seanceId = seanceId;
-        this.seanceDate = seanceDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.movieParkId = movieParkId;
-        this.movieParkName = movieParkName;
-        this.movieId = movieId;
-        this.movieName = movieName;
-        this.hallId = hallId;
-        this.basePrice = basePrice;
-        this.vipPrice = vipPrice;
-    }
-}
-
-class SeancePlace {
-    seanceId: number;
-    placeId: number;
-    blocked: boolean;
-
-    constructor(seanceId: number,
-                placeId: number,
-                blocked: boolean) {
-        this.seanceId = seanceId;
-        this.placeId = placeId;
-        this.blocked = blocked;
-    }
-}
-
-class MovieInfo {
-    movieId: number;
-    movieName: string;
-    imgList: string[];
-
-    static of(movieId: number,
-              movieName: string,
-              imgList: string[]) {
-        return new MovieInfo(movieId, movieName, imgList);
-    }
-
-    constructor(movieId: number,
-                movieName: string,
-                imgList: string[]) {
-        this.movieId = movieId;
-        this.movieName = movieName;
-        this.imgList = imgList;
-    }
-}
 
 function getSeanceInfoById(seanceId: number): Promise<SeanceInfo> {
     log('Start getting seance info by id:', seanceId);
     let myUrl = `${getSeanceInfoUrl}/${seanceId}`;
 
     return httpClient.get(myUrl)
-            .then(response => {
-                log('Finish getting seance info by id:', seanceId)
-                return response as unknown as SeanceInfo;
-            })
-            .catch(error => error)
+        .then(response => {
+            log('Finish getting seance info by id:', seanceId, response)
+            return response.data as unknown as SeanceInfo;
+        })
+        .catch(error => error)
 }
 
 function getSeancePlacesInfoById(seanceId: number): Promise<SeancePlace[]> {
@@ -120,13 +57,10 @@ function unblockPlaces(requestBody: Object) {
 
 function blockUnblockPlaces(url: string, requestBody: Object) {
     return httpClient.put(url, requestBody, {
-        auth: {
-            username: "operator@gmail.com",
-            password: "password"
-        }
+        auth: OPERATOR_CREDS
     })
         .then(response => {
-            log("All seances in all movie parks::", response);
+            log("All seances in all movie parks:", response);
             return response;
         })
         .then(blockedPlace => {
@@ -162,7 +96,7 @@ function getAllMoviesByIdSet(idSet: Set<number>): Promise<Map<number, MovieInfo>
 
     let idList: number[] = []
     idSet.forEach(id => idList.push(id))
-    const requestBody = {"movieIdSet" : idList}
+    const requestBody = {"movieIdSet": idList}
     log("requestBody", requestBody)
 
     return httpClient.post(myUrl, requestBody)

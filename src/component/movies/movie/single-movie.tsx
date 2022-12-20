@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import css from "./movie.module.css";
 import GeneralUtils from "../../../scripts/general-utils";
 import {MovieInfo} from "../../../scripts/api-methods";
 
 function log(...args: any[]) {
-    GeneralUtils.log("Movie", ...args)
+    GeneralUtils.log("SingleMovie", ...args)
 }
 
-interface IMovieProps extends RouteComponentProps<any> {
+interface IMovieProps {
+    navigation: any
     movieInfo: MovieInfo
     activeDateStr: string
 }
@@ -17,7 +18,7 @@ interface IMovieState {
     imgIndex: number
 }
 
-export class Movie extends Component<IMovieProps, IMovieState> {
+class SingleMovieClass extends Component<IMovieProps, IMovieState> {
     constructor(props: IMovieProps) {
         super(props);
 
@@ -29,10 +30,12 @@ export class Movie extends Component<IMovieProps, IMovieState> {
     }
 
     goToSeances() {
-        this.props.history.push({
-            pathname: `/seances/active_date=${this.props.activeDateStr}/movie_id=${this.props.movieInfo.movieId}`,
-            state: {movieInfo: this.props.movieInfo}
-        });
+        this.props.navigation(
+            `/seance/date/${this.props.activeDateStr}/movie_id/${this.props.movieInfo.movieId}`,
+            {
+                state: {movieInfo: this.props.movieInfo}
+            }
+        )
     }
 
     getRandomIndex() {
@@ -60,4 +63,10 @@ export class Movie extends Component<IMovieProps, IMovieState> {
     }
 }
 
-export default withRouter(Movie);
+function SingleMovie(props: any) {
+    return <SingleMovieClass activeDateStr={props.activeDateStr}
+                             movieInfo={props.movieInfo}
+                             navigation={useNavigate()}/>
+}
+
+export default SingleMovie

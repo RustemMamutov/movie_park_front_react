@@ -1,17 +1,20 @@
 import React, {Component} from 'react';
 import GeneralUtils from "../../../scripts/general-utils";
 import {blockPlaces} from "../../../scripts/api-methods";
-import {RouteComponentProps, withRouter} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {NavigateFunction} from "react-router/dist/lib/hooks";
 
 function log(...args: any[]) {
-    GeneralUtils.log("Payment", ...args)
+    GeneralUtils.log(PaymentClass.name, ...args)
 }
 
-interface IPaymentProps extends RouteComponentProps<any> {
-    location: any;
+interface IPaymentProps {
+    navigation: NavigateFunction;
+    blockPlacesRequestBody: {}
 }
 
-export class Payment extends Component<IPaymentProps> {
+
+class PaymentClass extends Component<IPaymentProps> {
     constructor(props: IPaymentProps) {
         super(props);
 
@@ -20,16 +23,15 @@ export class Payment extends Component<IPaymentProps> {
 
     async payAndBlockPlaces() {
         log("payment processed");
-        let requestBody = this.props.location.state.blockPlacesRequestBody
-        log("Blocking places", requestBody);
-        await blockPlaces(requestBody)
-        this.props.history.push(`/seance/payment/success`);
+        log("Blocking places", this.props.blockPlacesRequestBody);
+        await blockPlaces(this.props.blockPlacesRequestBody)
+        this.props.navigation("/seance/payment/success");
     }
 
     render() {
         return (
             <div>
-                <h3>There would be payment form</h3>
+                <h3>There will be payment form</h3>
                 <button type="button" className="btn btn-success" onClick={this.payAndBlockPlaces}>
                     Оплатить
                 </button>
@@ -38,4 +40,9 @@ export class Payment extends Component<IPaymentProps> {
     }
 }
 
-export default withRouter(Payment);
+function Payment() {
+    return <PaymentClass blockPlacesRequestBody={useLocation().state.blockPlacesRequestBody}
+                         navigation={useNavigate()}/>
+}
+
+export default Payment

@@ -8,11 +8,11 @@ function log(...args: any[]) {
 
 class GeneralUtils {
     static log(_classname: string, ...args: any[]): void {
-        console.log(`${_classname}: `, ...args);
+        console.log(`${_classname}:`, ...args);
     }
 
     static error(_classname: string, ...args: any[]): void {
-        console.error(`${_classname}: `, ...args);
+        console.error(`${_classname}:`, ...args);
     }
 
     static dateToStringPromise(_date: Date, _format: string = DEFAULT_FORMAT): Promise<string> {

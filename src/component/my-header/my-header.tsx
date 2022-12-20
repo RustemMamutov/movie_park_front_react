@@ -5,7 +5,7 @@ const MyHeader = () => {
     return (
         <header className={css.header}>
             <br/>
-            <text className={css.text}>this is header</text>
+            <div className={css.text}>this is header</div>
         </header>
     )
 }

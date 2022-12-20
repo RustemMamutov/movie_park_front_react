@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GeneralUtils from "../../../scripts/general-utils";
 import {SeanceInfo} from "../../../scripts/api-methods";
+import {NavigateFunction} from "react-router/dist/lib/hooks";
 
 function log(...args: any[]) {
     GeneralUtils.log("SeanceButton", ...args)
 }
 
-interface ISeanceButtonProps extends RouteComponentProps<any> {
+interface ISeanceButtonProps {
+    navigation: NavigateFunction;
     seanceInfo: SeanceInfo;
 }
 
-export class SeanceButton extends Component<ISeanceButtonProps> {
+export class SeanceButtonClass extends Component<ISeanceButtonProps> {
     constructor(props: ISeanceButtonProps) {
         super(props);
 
@@ -20,8 +22,7 @@ export class SeanceButton extends Component<ISeanceButtonProps> {
     }
 
     goToSeance() {
-        this.props.history.push({
-            pathname: `/seance/seance_id=${this.props.seanceInfo.seanceId}`,
+        this.props.navigation(`/seance/id/${this.props.seanceInfo.seanceId}`, {
             state: {seanceInfo: this.props.seanceInfo}
         });
     }
@@ -33,12 +34,15 @@ export class SeanceButton extends Component<ISeanceButtonProps> {
     render() {
         log("seanceInfo: ", this.props.seanceInfo)
         return (
-            <button type="button" className="btn btn-warning" onClick={this.goToSeance}>
-                {log("seanceInfo", this.props.seanceInfo)}
+            <button type="button" className="btn btn-success" onClick={this.goToSeance}>
                 {this.showTimeHHMMFormat(this.props.seanceInfo.startTime)}
             </button>
         );
     }
 }
 
-export default withRouter(SeanceButton);
+function SeanceButton(props: any) {
+    return <SeanceButtonClass seanceInfo={props.seanceInfo} navigation={useNavigate()}/>
+}
+
+export default SeanceButton

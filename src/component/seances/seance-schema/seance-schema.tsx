@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
-import {RouteComponentProps, withRouter} from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {useNavigate, useParams} from "react-router-dom";
 import css from './seance-schema.module.css';
 import SeanceSchemaUtils from "./seance-schema-utils";
-import {SeanceInfo, SeancePlace, getSeancePlacesInfoById} from "../../../scripts/api-methods";
+import {SELECTED_SEAT_RADIUS, UNSELECTED_SEAT_RADIUS} from "../../../scripts/constants";
+import {getSeanceInfoById, getSeancePlacesInfoById} from "../../../scripts/api-methods";
+import {hallsPlacesInfo, SeanceInfo, SeancePlace} from "../../../scripts/data-structures";
 import GeneralUtils from "../../../scripts/general-utils";
-import {hallsPlacesInfo} from "../../../scripts/constants";
+
+import {NavigateFunction} from "react-router/dist/lib/hooks";
 
 function log(...args: any[]) {
     GeneralUtils.log("SeanceSchema", ...args)
 }
 
-interface ISeanceSchemaProps extends RouteComponentProps<any> {
-    location: any;
+interface ISeanceSchemaProps {
+    navigation: NavigateFunction;
+    seanceId: number;
 }
 
 interface ISeanceSchemaState {
@@ -23,7 +26,7 @@ interface ISeanceSchemaState {
     seancePlacesInfoList: SeancePlace[];
 }
 
-export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaState> {
+class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState> {
     constructor(props: ISeanceSchemaProps) {
         super(props);
 
@@ -31,18 +34,21 @@ export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaSta
         this.buyTickets = this.buyTickets.bind(this);
 
         this.state = {
-            seanceId: props.match.params.seanceId,
-            seanceInfo: props.location.state.seanceInfo,
+            seanceId: props.seanceId,
+            seanceInfo: {} as SeanceInfo,
             totalPrice: 0,
-            selectedPlaceList: new Set(),
+            selectedPlaceList: new Set<number>(),
             seancePlacesInfoList: []
         }
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
+        let seanceInfoById = await getSeanceInfoById(this.state.seanceId)
         let seancePlacesInfoList = await getSeancePlacesInfoById(this.state.seanceId)
-        this.setState({seancePlacesInfoList: seancePlacesInfoList});
-        this.drawAllSeats();
+        this.setState(
+            {seancePlacesInfoList: seancePlacesInfoList, seanceInfo: seanceInfoById},
+            this.drawAllSeats
+        )
     }
 
     drawAllSeats() {
@@ -77,7 +83,7 @@ export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaSta
     }
 
     selectThePlace(event: any): void {
-        function _changeCircle(_element: Element, _radius: string, _selected: boolean){
+        function _changeCircle(_element: Element, _radius: string, _selected: boolean) {
             _element.setAttribute('r', _radius);
             _element.setAttribute('selected', _selected + "");
         }
@@ -97,12 +103,12 @@ export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaSta
             let placePrice = parseInt(element.getAttribute('price'), 10);
             if (element.getAttribute('selected') === 'true') {
                 log(`Place id = ${elementId} was selected. Unselect it.`);
-                _changeCircle(element, "2.5%", false)
+                _changeCircle(element, UNSELECTED_SEAT_RADIUS, false)
                 this.state.selectedPlaceList.delete(elementId)
                 this.setState({totalPrice: this.state.totalPrice - placePrice});
             } else {
                 log(`Place id = ${elementId} wasn't selected. Select it.`);
-                _changeCircle(element, "3.0%", true)
+                _changeCircle(element, SELECTED_SEAT_RADIUS, true)
                 this.state.selectedPlaceList.add(elementId)
                 this.setState({totalPrice: this.state.totalPrice + placePrice});
             }
@@ -112,8 +118,7 @@ export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaSta
     buyTickets() {
         let blockPlacesRequestBody = SeanceSchemaUtils.prepareBlockUnblockPlacesRequestBody(
             this.state.selectedPlaceList, this.state.seanceId)
-        this.props.history.push({
-            pathname: `/seance/payment`,
+        this.props.navigation('/seance/payment', {
             state: {blockPlacesRequestBody: blockPlacesRequestBody}
         });
     }
@@ -128,11 +133,18 @@ export class SeanceSchema extends Component<ISeanceSchemaProps, ISeanceSchemaSta
                 <svg
                     id="seanceGraphArea" height="800" width="800"
                     xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-                    onClick={this.selectThePlace}>
+                    onClick={this.selectThePlace}
+                >
                 </svg>
             </div>
         );
     }
 }
 
-export default withRouter(SeanceSchema)
+function SeanceSchema() {
+    return <SeanceSchemaClass seanceId={parseInt(String(useParams().seanceId))}
+                              navigation={useNavigate()}/>
+}
+
+export default SeanceSchema
+

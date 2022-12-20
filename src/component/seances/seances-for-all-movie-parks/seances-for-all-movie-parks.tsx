@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import SeancesForOneMoviePark from "../seances-for-one-movie-park/seances-for-one-movie-park";
-import {MovieInfo, SeanceInfo, getAllSeancesByMovieAndDate} from "../../../scripts/api-methods";
+import {getAllSeancesByMovieAndDate} from "../../../scripts/api-methods";
+import {MovieInfo, SeanceInfo} from "../../../scripts/data-structures";
 import GeneralUtils from "../../../scripts/general-utils";
-import {RouteComponentProps} from "react-router-dom";
+import {NavigateFunction} from "react-router/dist/lib/hooks";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 function log(...args: any[]) {
     GeneralUtils.log("SeancesForAllMovieParks", ...args)
 }
 
-interface ISeancesForAllMovieParksProps extends RouteComponentProps<any> {
-    location: any;
+interface ISeancesForAllMovieParksProps {
+    navigation: NavigateFunction;
+    movieId: number;
+    activeDate: string;
+    movieInfo: MovieInfo;
 }
 
 interface ISeancesForAllMovieParksState {
@@ -20,21 +25,20 @@ interface ISeancesForAllMovieParksState {
     seanceDict: Map<string, SeanceInfo[]>
 }
 
-export class SeancesForAllMovieParks extends
-    Component<ISeancesForAllMovieParksProps, ISeancesForAllMovieParksState> {
+export class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieParksProps, ISeancesForAllMovieParksState> {
     constructor(props: ISeancesForAllMovieParksProps) {
         super(props);
 
         this.state = {
-            movieId: props.match.params.movieId,
-            activeDate: props.match.params.activeDate,
-            movieInfo: props.location.state.movieInfo,
+            movieId: props.movieId,
+            activeDate: props.activeDate,
+            movieInfo: props.movieInfo,
             movieParkNames: [],
             seanceDict: new Map<string, SeanceInfo[]>()
         }
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         const seanceDict: Map<string, SeanceInfo[]> = await getAllSeancesByMovieAndDate(this.state.movieId, this.state.activeDate)
         log("seanceDict", seanceDict)
         this.setState({seanceDict: seanceDict});
@@ -47,7 +51,7 @@ export class SeancesForAllMovieParks extends
         )
     }
 
-    showSeancesForOneMoviePark() {
+    showSeancesForEachMoviePark() {
         if (this.state.movieParkNames.length > 0) {
             return (
                 this.state.movieParkNames.map(movieParkName => {
@@ -63,8 +67,6 @@ export class SeancesForAllMovieParks extends
                 )
             )
         }
-
-        log("empty")
     }
 
     render() {
@@ -72,10 +74,15 @@ export class SeancesForAllMovieParks extends
             <div>
                 {this.showHeader()}
                 <br/>
-                {this.showSeancesForOneMoviePark()}
+                {this.showSeancesForEachMoviePark()}
             </div>
         );
     }
 }
 
-export default SeancesForAllMovieParks;
+export function SeancesForAllMovieParks() {
+    return <SeancesForAllMovieParksClass movieInfo={useLocation().state.movieInfo}
+                                         activeDate={String(useParams().activeDate)}
+                                         movieId={parseInt(String(useParams().movieId))}
+                                         navigation={useNavigate()}/>
+}

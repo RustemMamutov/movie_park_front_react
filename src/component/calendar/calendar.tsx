@@ -24,7 +24,7 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
 
         this.state = {
             showCalendarMenu: false,
-            activeDateList: this.props.activeDateList
+            activeDateList: props.activeDateList
         }
     }
 

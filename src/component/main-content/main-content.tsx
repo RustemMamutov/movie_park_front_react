@@ -3,24 +3,24 @@ import css from './main-content.module.css';
 import Movies from "../movies/movies";
 import GeneralUtils from "../../scripts/general-utils";
 import Calendar from "../calendar/calendar";
-import {RouteComponentProps} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 function log(...args: any[]) {
     GeneralUtils.log("MainContent", ...args)
 }
 
-interface IMainContentProps extends RouteComponentProps<any> {
-    location: any;
+interface IMainContentProps {
+    activeDateStr: string
 }
 
 interface IMainContentState {
     X: number;
     Y: number;
-    activeDate: string;
-    activeDateList: string[]
+    activeDateStr: string;
+    dateList: string[]
 }
 
-export class MainContent extends Component<IMainContentProps, IMainContentState> {
+class MainContentClass extends Component<IMainContentProps, IMainContentState> {
     constructor(props: IMainContentProps) {
         super(props);
 
@@ -29,19 +29,23 @@ export class MainContent extends Component<IMainContentProps, IMainContentState>
         this.state = {
             X: 0,
             Y: 0,
-            activeDate: this.props.match != null
-                ? this.props.match.params.activeDate
-                : GeneralUtils.dateToString(new Date()),
-            activeDateList: []
+            activeDateStr: props.activeDateStr,
+            dateList: []
         }
     }
 
-    componentWillMount() {
-        let activeDate = GeneralUtils.stringToDate(this.state.activeDate)
-        for (let i = 0; i <= 7; i++) {
-            let currDate = new Date(activeDate.getTime())
-            currDate.setDate(currDate.getDate() + i)
-            this.state.activeDateList.push(GeneralUtils.dateToString(currDate));
+    static getDerivedStateFromProps(props: IMainContentProps, state: IMainContentState) {
+        if (state.dateList.length === 0) {
+            let dateList: string[] = []
+            let activeDate = GeneralUtils.stringToDate(props.activeDateStr)
+            for (let i = 0; i <= 7; i++) {
+                let currDateStr = GeneralUtils.dateToString(activeDate)
+                dateList.push(currDateStr);
+                activeDate.setDate(activeDate.getDate() + 1)
+            }
+            return {dateList: dateList};
+        } else {
+            return {activeDateStr: state.activeDateStr};
         }
     }
 
@@ -54,31 +58,32 @@ export class MainContent extends Component<IMainContentProps, IMainContentState>
 
     setActiveDate(_activeDate: string) {
         log("setActiveDate", _activeDate)
-        this.setState({activeDate: _activeDate})
-        this.forceUpdate()
+        this.setState({activeDateStr: _activeDate})
     }
 
     showCalendar() {
         return (
             <Calendar setActiveDate={this.setActiveDate.bind(this)}
-                      activeDate={this.state.activeDate}
-                      activeDateList={this.state.activeDateList}/>
+                      activeDate={this.state.activeDateStr}
+                      activeDateList={this.state.dateList}/>
         )
     }
 
     showContent() {
-        if (this.state.activeDate === undefined) {
+        if (this.state.activeDateStr === undefined) {
             return null;
         }
 
         return (
-            <Movies activeDateStr={this.state.activeDate}/>
+            <Movies activeDateStr={this.state.activeDateStr}
+                    activeDateList={this.state.dateList}/>
         )
     }
 
     render() {
         return (
             <div className={css.content} onMouseMove={this.handleMouseMove.bind(this)}>
+                <div>current active date: {this.state.activeDateStr}</div>
                 {this.showCalendar()}
                 <br/>
                 <b>MyMainContent. Coordinates X: {this.state.X} Y: {this.state.Y}</b>
@@ -86,6 +91,10 @@ export class MainContent extends Component<IMainContentProps, IMainContentState>
             </div>
         )
     }
+}
+
+function MainContent() {
+    return <MainContentClass activeDateStr={String(useParams().activeDate)}/>
 }
 
 export default MainContent;

@@ -9,46 +9,74 @@ function log(...args: any[]) {
     GeneralUtils.log("SeancesForOneMoviePark", ...args)
 }
 
+const COLUMNS_COULD = 5
+
 interface ISeancesForOneMovieParkProps {
     seanceList: SeanceInfo[]
     movieParkName: string
 }
 
-export class SeancesForOneMoviePark extends
-    Component<ISeancesForOneMovieParkProps> {
+interface ISeancesForOneMovieParkState {
+    sortedSeanceList: SeanceInfo[]
+}
 
-    showSeanceButton(seanceList: any, row: number) {
-        if (seanceList[row] != null) {
-            return <SeanceButton seanceInfo={seanceList[row]}/>
+export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkProps, ISeancesForOneMovieParkState> {
+
+    constructor(props: ISeancesForOneMovieParkProps) {
+        super(props);
+
+        this.state = {
+            sortedSeanceList: []
         }
-
-        log("empty seance ", row)
-        return null
     }
 
-    componentWillMount() {
-        log("seancesByDateAndMovie before sort: ", this.props.seanceList)
-
+    static getDerivedStateFromProps(props: ISeancesForOneMovieParkProps) {
         function toDate(seanceInfo: SeanceInfo): Date {
             return new Date(`${seanceInfo.seanceDate} ${seanceInfo.startTime}`)
         }
 
-        this.props.seanceList.sort(function (a: any, b: any) {
+        let sortedSeanceList = Object.assign([], props.seanceList);
+        log("seancesByDateAndMovie before sort: ", sortedSeanceList)
+        sortedSeanceList.sort(function (a: any, b: any) {
             let date1 = toDate(a);
             let date2 = toDate(b);
             if (date1 > date2) return 1;
             else if (date1 === date2) return 0;
             else return -1;
         });
-
-        log("seancesByDateAndMovie after sort: ", this.props.seanceList)
+        log("seancesByDateAndMovie after sort: ", sortedSeanceList)
+        return {sortedSeanceList: sortedSeanceList};
     }
 
-    show_seances(seanceList: SeanceInfo[]) {
+    showSeanceButton(index: number) {
+        if (this.state.sortedSeanceList[index] != null) {
+            return <SeanceButton seanceInfo={this.state.sortedSeanceList[index]}/>
+        }
+    }
+
+    showSeanceButtons(row: number) {
+        let baseIndex = COLUMNS_COULD * row;
+        return (
+            <div className={css.seances_row}>
+                {COLUMNS_COULD >= 1 ? this.showSeanceButton(baseIndex) : null}
+                {COLUMNS_COULD >= 2 ? this.showSeanceButton(baseIndex + 1) : null}
+                {COLUMNS_COULD >= 3 ? this.showSeanceButton(baseIndex + 2) : null}
+                {COLUMNS_COULD >= 4 ? this.showSeanceButton(baseIndex + 3) : null}
+                {COLUMNS_COULD >= 5 ? this.showSeanceButton(baseIndex + 4) : null}
+                {COLUMNS_COULD >= 6 ? this.showSeanceButton(baseIndex + 5) : null}
+                {COLUMNS_COULD >= 7 ? this.showSeanceButton(baseIndex + 6) : null}
+            </div>
+        )
+    }
+
+    show_seances() {
+        let seanceList = this.state.sortedSeanceList
         let rowsList: number[] = []
-        for (let i = 0; i < Math.ceil(seanceList.length / 7); i++) {
+        log("seanceList.length", seanceList.length, "Math", Math.ceil(seanceList.length / COLUMNS_COULD))
+        for (let i = 0; i < Math.ceil(seanceList.length / COLUMNS_COULD); i++) {
             rowsList.push(i)
         }
+        log("rowsList", rowsList)
         if (seanceList.length > 0) {
             return (
                 <div className="row" id={"row_" + this.props.movieParkName}>
@@ -57,19 +85,8 @@ export class SeancesForOneMoviePark extends
                     </div>
                     <div className="col-8" id={"rightColumn_" + this.props.movieParkName}>
                         {rowsList.map(row => {
-                                return (
-                                    <div className={css.seances_row}>
-                                        {this.showSeanceButton(seanceList, 5 * row)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 1)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 2)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 3)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 4)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 5)}
-                                        {this.showSeanceButton(seanceList, 5 * row + 6)}
-                                    </div>
-                                )
-                            }
-                        )}
+                            return this.showSeanceButtons(row)
+                        })}
                     </div>
                 </div>
             )
@@ -80,7 +97,7 @@ export class SeancesForOneMoviePark extends
 
     render() {
         return (
-            <>{this.show_seances(this.props.seanceList)}</>
+            <>{this.show_seances()}</>
         );
     }
 }

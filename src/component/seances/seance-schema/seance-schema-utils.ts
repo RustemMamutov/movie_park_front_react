@@ -1,5 +1,5 @@
 import css from './seance-schema.module.css';
-import {HallPlaceInfo} from "../../../scripts/constants";
+import {HallPlaceInfo} from "../../../scripts/data-structures";
 import GeneralUtils from "../../../scripts/general-utils";
 
 
@@ -14,7 +14,7 @@ class SeanceSchemaUtils {
 
         let blockPlacesRequestBody = {
             "seanceId": seanceId,
-            "placeIdList" : [] as number[]
+            "placeIdList": [] as number[]
         };
 
         selectedPlaceList.forEach(placeId => {
@@ -25,7 +25,7 @@ class SeanceSchemaUtils {
         return blockPlacesRequestBody;
     }
 
-    static selectedPlaceListToString(selectedPlaceList: Set<number>){
+    static selectedPlaceListToString(selectedPlaceList: Set<number>) {
         return Array.from(selectedPlaceList).join(' ')
     }
 
@@ -85,7 +85,6 @@ class SeanceSchemaUtils {
             movie.setAttribute('class', "col-3 movie");
             movie.setAttribute('id', index);
             movie.textContent = todayMoviesList[index];
-            log("_14", movie)
             container.appendChild(movie);
         }
         log('Finish drawing all movies.');
