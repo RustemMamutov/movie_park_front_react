@@ -5,13 +5,9 @@ import SeanceSchemaUtils from "./seance-schema-utils";
 import {SELECTED_SEAT_RADIUS, UNSELECTED_SEAT_RADIUS} from "../../../scripts/constants";
 import {getSeanceInfoById, getSeancePlacesInfoById} from "../../../scripts/api-methods";
 import {hallsPlacesInfo, SeanceInfo, SeancePlace} from "../../../scripts/data-structures";
-import GeneralUtils from "../../../scripts/general-utils";
 
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-
-function log(...args: any[]) {
-    GeneralUtils.log("SeanceSchema", ...args)
-}
+import {getLogger} from "../../../scripts/log-config";
 
 interface ISeanceSchemaProps {
     navigation: NavigateFunction;
@@ -95,19 +91,19 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
 
         const elementId = element.getAttribute("id")
         if (element.getAttribute('blocked') === 'true') {
-            log(`Place id = ${elementId} is blocked.`);
+            logger.debug(`Place id = ${elementId} is blocked.`);
             return;
         }
 
         if (element.classList.contains(css.seat)) {
             let placePrice = parseInt(element.getAttribute('price'), 10);
             if (element.getAttribute('selected') === 'true') {
-                log(`Place id = ${elementId} was selected. Unselect it.`);
+                logger.debug(`Place id = ${elementId} was selected. Unselect it.`);
                 _changeCircle(element, UNSELECTED_SEAT_RADIUS, false)
                 this.state.selectedPlaceList.delete(elementId)
                 this.setState({totalPrice: this.state.totalPrice - placePrice});
             } else {
-                log(`Place id = ${elementId} wasn't selected. Select it.`);
+                logger.debug(`Place id = ${elementId} wasn't selected. Select it.`);
                 _changeCircle(element, SELECTED_SEAT_RADIUS, true)
                 this.state.selectedPlaceList.add(elementId)
                 this.setState({totalPrice: this.state.totalPrice + placePrice});
@@ -141,10 +137,9 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     }
 }
 
-function SeanceSchema() {
+const logger = getLogger(SeanceSchema.name);
+
+export default function SeanceSchema() {
     return <SeanceSchemaClass seanceId={parseInt(String(useParams().seanceId))}
                               navigation={useNavigate()}/>
 }
-
-export default SeanceSchema
-

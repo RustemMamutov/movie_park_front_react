@@ -1,3 +1,15 @@
+import {LogLevel} from "typescript-logging";
+
+export const LOGGING_LEVEL = LogLevel.Debug
+
+export const OPERATOR_CREDS = {
+    username: "operator@gmail.com",
+    password: "password"
+}
+
+export const SELECTED_SEAT_RADIUS = "3.0%"
+export const UNSELECTED_SEAT_RADIUS = "2.5%"
+
 export const monthDict: Record<number, string[]> = {
     0: ["Январь", "янв"],
     1: ["Февраль", "фев"],
@@ -24,10 +36,3 @@ export const daysDict: Record<number, string> = {
 };
 
 
-export const OPERATOR_CREDS = {
-    username: "operator@gmail.com",
-    password: "password"
-}
-
-export const SELECTED_SEAT_RADIUS = "3.0%"
-export const UNSELECTED_SEAT_RADIUS = "2.5%"

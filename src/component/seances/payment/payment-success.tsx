@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import {useNavigate} from "react-router-dom";
-import GeneralUtils from "../../../scripts/general-utils";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-
-function log(...args: any[]) {
-    GeneralUtils.log(PaymentSuccessClass.name, ...args)
-}
+import {getLogger} from "../../../scripts/log-config";
 
 interface IPaymentSuccessProps {
     navigate: NavigateFunction
@@ -19,7 +15,7 @@ class PaymentSuccessClass extends Component<IPaymentSuccessProps> {
     }
 
     goToStartPage() {
-        log("Go to start page");
+        logger.debug("Go to start page");
         this.props.navigate("/");
     }
 
@@ -35,8 +31,8 @@ class PaymentSuccessClass extends Component<IPaymentSuccessProps> {
     }
 }
 
-function PaymentSuccess() {
+const logger = getLogger(PaymentSuccess.name);
+
+export default function PaymentSuccess() {
     return <PaymentSuccessClass navigate={useNavigate()}/>
 }
-
-export default PaymentSuccess

@@ -4,10 +4,7 @@ import Movies from "../movies/movies";
 import GeneralUtils from "../../scripts/general-utils";
 import Calendar from "../calendar/calendar";
 import {useParams} from "react-router-dom";
-
-function log(...args: any[]) {
-    GeneralUtils.log("MainContent", ...args)
-}
+import {getLogger} from "../../scripts/log-config";
 
 interface IMainContentProps {
     activeDateStr: string
@@ -57,7 +54,7 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
     }
 
     setActiveDate(_activeDate: string) {
-        log("setActiveDate", _activeDate)
+        logger.debug("setActiveDate", _activeDate)
         this.setState({activeDateStr: _activeDate})
     }
 
@@ -93,8 +90,8 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
     }
 }
 
-function MainContent() {
+const logger = getLogger(MainContent.name);
+
+export default function MainContent() {
     return <MainContentClass activeDateStr={String(useParams().activeDate)}/>
 }
-
-export default MainContent;

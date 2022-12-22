@@ -1,17 +1,13 @@
 import React, {Component, MouseEvent} from 'react';
 import {getAllMoviesByIdSet, getMovieListByPeriod, SeanceInfo} from '../../scripts/api-methods'
 import {MovieInfo} from '../../scripts/data-structures'
-import GeneralUtils from "../../scripts/general-utils";
 import css from './movies.module.css'
 import SingleMovie from "./movie/single-movie";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 import {useNavigate} from "react-router-dom";
+import {getLogger} from "../../scripts/log-config";
 
 const COLUMNS_COULD = 3
-
-function log(...args: any[]) {
-    GeneralUtils.log("Movies", ...args)
-}
 
 interface IMoviesProps {
     navigation: NavigateFunction;
@@ -31,7 +27,7 @@ interface IMoviesState {
     movieInfoDict: Map<number, MovieInfo>
 }
 
-export class MoviesClass extends Component<IMoviesProps, IMoviesState> {
+class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     constructor(props: IMoviesProps) {
         super(props);
 
@@ -65,12 +61,12 @@ export class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     }
 
     async componentDidMount() {
-        log(`firstDateStr: ${this.state.firstDateStr} secondDateStr ${this.state.secondDateStr} activeDateStr ${this.props.activeDateStr}`)
+        logger.debug(`firstDateStr: ${this.state.firstDateStr} secondDateStr ${this.state.secondDateStr} activeDateStr ${this.props.activeDateStr}`)
 
         const movieByDateMap: Map<string, Map<number, string>> =
             await getMovieListByPeriod(this.state.firstDateStr, this.state.secondDateStr)
-        log("movieByDateMap", movieByDateMap)
-        log("activeDateMovies", movieByDateMap.get(this.props.activeDateStr))
+        logger.debug("movieByDateMap", movieByDateMap)
+        logger.debug("activeDateMovies", movieByDateMap.get(this.props.activeDateStr))
         this.setState({movieByDateMap: movieByDateMap});
         this.setState({
             activeDateMovies: movieByDateMap.get(this.props.activeDateStr) as Map<number, string>
@@ -79,17 +75,17 @@ export class MoviesClass extends Component<IMoviesProps, IMoviesState> {
         let movieIdSet = new Set<number>()
         movieByDateMap.forEach(
             (movieMap, date) => {
-                log("date", date, "movieMap", movieMap)
+                logger.debug("date", date, "movieMap", movieMap)
                 Object.keys(movieMap).forEach(movieId => {
                     movieIdSet.add(parseInt(movieId));
                 })
             })
 
         this.setState({movieIdSet: movieIdSet})
-        log("movieIdSet:", movieIdSet)
+        logger.debug("movieIdSet:", movieIdSet)
 
         const movieInfoDict = await getAllMoviesByIdSet(movieIdSet)
-        log("movieInfoDict", movieInfoDict)
+        logger.debug("movieInfoDict", movieInfoDict)
         this.setState({movieInfoDict: movieInfoDict})
     }
 
@@ -155,11 +151,10 @@ export class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     }
 }
 
+const logger = getLogger(Movies.name);
 
-function Movies(props: any) {
+export default function Movies(props: any) {
     return <MoviesClass activeDateStr={props.activeDateStr}
                         activeDateList={props.activeDateList}
                         navigation={useNavigate()}/>
 }
-
-export default Movies

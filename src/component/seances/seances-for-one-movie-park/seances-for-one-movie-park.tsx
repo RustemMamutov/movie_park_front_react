@@ -2,12 +2,8 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import css from "./seances-for-one-movie-park.module.css";
 import SeanceButton from "../seance-button/seance-button";
-import GeneralUtils from "../../../scripts/general-utils";
 import {SeanceInfo} from "../../../scripts/api-methods";
-
-function log(...args: any[]) {
-    GeneralUtils.log("SeancesForOneMoviePark", ...args)
-}
+import {getLogger} from "../../../scripts/log-config";
 
 const COLUMNS_COULD = 5
 
@@ -36,7 +32,7 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
         }
 
         let sortedSeanceList = Object.assign([], props.seanceList);
-        log("seancesByDateAndMovie before sort: ", sortedSeanceList)
+        logger.trace("seancesByDateAndMovie before sort:", sortedSeanceList)
         sortedSeanceList.sort(function (a: any, b: any) {
             let date1 = toDate(a);
             let date2 = toDate(b);
@@ -44,7 +40,7 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
             else if (date1 === date2) return 0;
             else return -1;
         });
-        log("seancesByDateAndMovie after sort: ", sortedSeanceList)
+        logger.debug("seancesByDateAndMovie after sort:", sortedSeanceList)
         return {sortedSeanceList: sortedSeanceList};
     }
 
@@ -72,11 +68,11 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
     show_seances() {
         let seanceList = this.state.sortedSeanceList
         let rowsList: number[] = []
-        log("seanceList.length", seanceList.length, "Math", Math.ceil(seanceList.length / COLUMNS_COULD))
+        logger.debug("seanceList.length", seanceList.length, "Math", Math.ceil(seanceList.length / COLUMNS_COULD))
         for (let i = 0; i < Math.ceil(seanceList.length / COLUMNS_COULD); i++) {
             rowsList.push(i)
         }
-        log("rowsList", rowsList)
+        logger.debug("rowsList", rowsList)
         if (seanceList.length > 0) {
             return (
                 <div className="row" id={"row_" + this.props.movieParkName}>
@@ -92,7 +88,7 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
             )
         }
 
-        log("empty")
+        logger.debug("empty")
     }
 
     render() {
@@ -101,5 +97,7 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
         );
     }
 }
+
+const logger = getLogger(SeancesForOneMoviePark.name);
 
 export default SeancesForOneMoviePark;

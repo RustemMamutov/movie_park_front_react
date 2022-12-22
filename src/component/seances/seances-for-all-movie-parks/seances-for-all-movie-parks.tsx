@@ -2,13 +2,9 @@ import React, {Component} from 'react';
 import SeancesForOneMoviePark from "../seances-for-one-movie-park/seances-for-one-movie-park";
 import {getAllSeancesByMovieAndDate} from "../../../scripts/api-methods";
 import {MovieInfo, SeanceInfo} from "../../../scripts/data-structures";
-import GeneralUtils from "../../../scripts/general-utils";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-
-function log(...args: any[]) {
-    GeneralUtils.log("SeancesForAllMovieParks", ...args)
-}
+import {getLogger} from "../../../scripts/log-config";
 
 interface ISeancesForAllMovieParksProps {
     navigation: NavigateFunction;
@@ -25,7 +21,7 @@ interface ISeancesForAllMovieParksState {
     seanceDict: Map<string, SeanceInfo[]>
 }
 
-export class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieParksProps, ISeancesForAllMovieParksState> {
+class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieParksProps, ISeancesForAllMovieParksState> {
     constructor(props: ISeancesForAllMovieParksProps) {
         super(props);
 
@@ -40,7 +36,7 @@ export class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieP
 
     async componentDidMount() {
         const seanceDict: Map<string, SeanceInfo[]> = await getAllSeancesByMovieAndDate(this.state.movieId, this.state.activeDate)
-        log("seanceDict", seanceDict)
+        logger.debug("seanceDict", seanceDict)
         this.setState({seanceDict: seanceDict});
         this.setState({movieParkNames: Array.from(seanceDict.keys())});
     }
@@ -55,8 +51,7 @@ export class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieP
         if (this.state.movieParkNames.length > 0) {
             return (
                 this.state.movieParkNames.map(movieParkName => {
-                        log("movieParkName:", movieParkName)
-                        log("seanceList:", this.state.seanceDict.get(movieParkName))
+                        logger.debug(`movieParkName: ${movieParkName} seanceList:`, this.state.seanceDict.get(movieParkName))
                         return (
                             <SeancesForOneMoviePark
                                 movieParkName={movieParkName}
@@ -79,6 +74,8 @@ export class SeancesForAllMovieParksClass extends Component<ISeancesForAllMovieP
         );
     }
 }
+
+const logger = getLogger(SeancesForAllMovieParks.name);
 
 export function SeancesForAllMovieParks() {
     return <SeancesForAllMovieParksClass movieInfo={useLocation().state.movieInfo}

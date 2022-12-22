@@ -1,12 +1,7 @@
 import React, {Component} from 'react';
 import {useNavigate} from 'react-router-dom'
 import css from "./movie.module.css";
-import GeneralUtils from "../../../scripts/general-utils";
 import {MovieInfo} from "../../../scripts/api-methods";
-
-function log(...args: any[]) {
-    GeneralUtils.log("SingleMovie", ...args)
-}
 
 interface IMovieProps {
     navigation: any
@@ -63,10 +58,8 @@ class SingleMovieClass extends Component<IMovieProps, IMovieState> {
     }
 }
 
-function SingleMovie(props: any) {
+export default function SingleMovie(props: any) {
     return <SingleMovieClass activeDateStr={props.activeDateStr}
                              movieInfo={props.movieInfo}
                              navigation={useNavigate()}/>
 }
-
-export default SingleMovie

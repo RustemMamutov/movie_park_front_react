@@ -1,16 +1,12 @@
 import css from './seance-schema.module.css';
 import {HallPlaceInfo} from "../../../scripts/data-structures";
-import GeneralUtils from "../../../scripts/general-utils";
+import {getLogger} from "../../../scripts/log-config";
 
-
-function log(...args: any[]) {
-    GeneralUtils.log("SeanceSchemaUtils: ", ...args);
-}
 
 class SeanceSchemaUtils {
     static prepareBlockUnblockPlacesRequestBody(selectedPlaceList: Set<number>,
                                                 seanceId: number) {
-        log('Start preparing block places request body.');
+        logger.trace('Start preparing block places request body.');
 
         let blockPlacesRequestBody = {
             "seanceId": seanceId,
@@ -21,7 +17,7 @@ class SeanceSchemaUtils {
             blockPlacesRequestBody.placeIdList.push(placeId);
         })
 
-        log("Finish preparing block places request body:", blockPlacesRequestBody);
+        logger.trace("Finish preparing block places request body:", blockPlacesRequestBody);
         return blockPlacesRequestBody;
     }
 
@@ -59,7 +55,7 @@ class SeanceSchemaUtils {
         circle.setAttributeNS(null, 'price', price);
         circle.setAttributeNS(null, 'blocked', blocked);
         circle.setAttributeNS(null, 'selected', false);
-        log('finish creating circle by place id: ', placeId);
+        logger.trace('finish creating circle by place id: ', placeId);
         return circle;
     }
 
@@ -71,12 +67,12 @@ class SeanceSchemaUtils {
         curvedLine.setAttribute('stroke', "grey");
         curvedLine.setAttribute('stroke-width', "1%");
         curvedLine.setAttribute('fill', "transparent");
-        log('Finish creating screen.');
+        logger.trace('Finish creating screen.');
         return curvedLine;
     }
 
     static drawAllMovies(document: any, todayMoviesList: any) {
-        log('Start drawing all movies.');
+        logger.trace('Start drawing all movies.');
         let container = document.getElementById('todayMovies');
 
         for (const index of Object.keys(todayMoviesList)) {
@@ -87,8 +83,10 @@ class SeanceSchemaUtils {
             movie.textContent = todayMoviesList[index];
             container.appendChild(movie);
         }
-        log('Finish drawing all movies.');
+        logger.trace('Finish drawing all movies.');
     }
 }
+
+const logger = getLogger(SeanceSchemaUtils.name);
 
 export default SeanceSchemaUtils

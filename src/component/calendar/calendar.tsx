@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import GeneralUtils from "../../scripts/general-utils";
-
-function log(...args: any[]) {
-    GeneralUtils.log("Calendar", ...args)
-}
+import {getLogger} from "../../scripts/log-config";
 
 interface ICalendarProps {
     setActiveDate: Function
@@ -33,12 +29,12 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
         if (this.state.showCalendarMenu) {
             value = false;
         }
-        log(`this.state.showCalendarMenu from:${this.state.showCalendarMenu}\tto:${value}`)
+        logger.debug(`this.state.showCalendarMenu from:${this.state.showCalendarMenu}\tto:${value}`)
         this.setState({showCalendarMenu: value});
     }
 
     setActiveDate(_activeDate: string) {
-        log("hide calendarMenu and setActiveDate", _activeDate)
+        logger.debug("hide calendarMenu and setActiveDate", _activeDate)
         this.setState({showCalendarMenu: false});
         this.props.setActiveDate(_activeDate)
     }
@@ -73,5 +69,7 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
         )
     }
 }
+
+const logger = getLogger(Calendar.name);
 
 export default Calendar;

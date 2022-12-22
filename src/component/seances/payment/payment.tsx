@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
-import GeneralUtils from "../../../scripts/general-utils";
 import {blockPlaces} from "../../../scripts/api-methods";
 import {useLocation, useNavigate} from "react-router-dom";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-
-function log(...args: any[]) {
-    GeneralUtils.log(PaymentClass.name, ...args)
-}
+import {getLogger} from "../../../scripts/log-config";
 
 interface IPaymentProps {
     navigation: NavigateFunction;
@@ -22,8 +18,8 @@ class PaymentClass extends Component<IPaymentProps> {
     }
 
     async payAndBlockPlaces() {
-        log("payment processed");
-        log("Blocking places", this.props.blockPlacesRequestBody);
+        logger.debug("payment processed");
+        logger.debug("Blocking places", this.props.blockPlacesRequestBody);
         await blockPlaces(this.props.blockPlacesRequestBody)
         this.props.navigation("/seance/payment/success");
     }
@@ -40,9 +36,9 @@ class PaymentClass extends Component<IPaymentProps> {
     }
 }
 
-function Payment() {
+const logger = getLogger(Payment.name);
+
+export default function Payment() {
     return <PaymentClass blockPlacesRequestBody={useLocation().state.blockPlacesRequestBody}
                          navigation={useNavigate()}/>
 }
-
-export default Payment
