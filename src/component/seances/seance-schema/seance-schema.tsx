@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import css from './seance-schema.module.css';
 import SeanceSchemaUtils from "./seance-schema-utils";
-import {SELECTED_SEAT_RADIUS, UNSELECTED_SEAT_RADIUS} from "../../../scripts/constants";
-import {getSeanceInfoById, getSeancePlacesInfoById} from "../../../scripts/api-methods";
-import {hallsPlacesInfo, SeanceInfo, SeancePlace} from "../../../scripts/data-structures";
+import {SELECTED_SEAT_RADIUS, UNSELECTED_SEAT_RADIUS} from "scripts/constants";
+import {getSeanceInfoById, getSeancePlacesInfoById} from "scripts/api-methods";
+import {hallsPlacesInfo, SeanceInfo, SeancePlace} from "scripts/data-structures";
 
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-import {getLogger} from "../../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface ISeanceSchemaProps {
     navigation: NavigateFunction;

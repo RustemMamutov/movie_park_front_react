@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import SeancesForOneMoviePark from "../seances-for-one-movie-park/seances-for-one-movie-park";
-import {getAllSeancesByMovieAndDate} from "../../../scripts/api-methods";
-import {MovieInfo, SeanceInfo} from "../../../scripts/data-structures";
+import SeancesForOneMoviePark from "component/seances/seances-for-one-movie-park/seances-for-one-movie-park";
+import {getAllSeancesByMovieAndDate} from "scripts/api-methods";
+import {MovieInfo, SeanceInfo} from "scripts/data-structures";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {getLogger} from "../../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface ISeancesForAllMovieParksProps {
     navigation: NavigateFunction;

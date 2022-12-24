@@ -1,6 +1,6 @@
 import css from './seance-schema.module.css';
-import {HallPlaceInfo} from "../../../scripts/data-structures";
-import {getLogger} from "../../../scripts/log-config";
+import {HallPlaceInfo} from "scripts/data-structures";
+import {getLogger} from "scripts/log-config";
 
 
 class SeanceSchemaUtils {

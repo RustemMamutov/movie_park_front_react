@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {blockPlaces} from "../../../scripts/api-methods";
+import {blockPlaces} from "scripts/api-methods";
 import {useLocation, useNavigate} from "react-router-dom";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-import {getLogger} from "../../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface IPaymentProps {
     navigation: NavigateFunction;

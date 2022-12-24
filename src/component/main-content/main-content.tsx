@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import css from './main-content.module.css';
-import Movies from "../movies/movies";
-import GeneralUtils from "../../scripts/general-utils";
-import Calendar from "../calendar/calendar";
+import Movies from "component/movies/movies";
+import GeneralUtils from "scripts/general-utils";
+import Calendar from "component/calendar/calendar";
 import {useParams} from "react-router-dom";
-import {getLogger} from "../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface IMainContentProps {
     activeDateStr: string

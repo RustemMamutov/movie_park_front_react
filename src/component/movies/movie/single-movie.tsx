@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {useNavigate} from 'react-router-dom'
 import css from "./movie.module.css";
-import {MovieInfo} from "../../../scripts/api-methods";
+import {MovieInfo} from "scripts/api-methods";
 
 interface IMovieProps {
     navigation: any

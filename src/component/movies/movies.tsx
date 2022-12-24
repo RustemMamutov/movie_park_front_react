@@ -1,11 +1,11 @@
 import React, {Component, MouseEvent} from 'react';
-import {getAllMoviesByIdSet, getMovieListByPeriod, SeanceInfo} from '../../scripts/api-methods'
-import {MovieInfo} from '../../scripts/data-structures'
+import {getAllMoviesByIdSet, getMovieListByPeriod, SeanceInfo} from 'scripts/api-methods'
+import {MovieInfo} from 'scripts/data-structures'
 import css from './movies.module.css'
 import SingleMovie from "./movie/single-movie";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 import {useNavigate} from "react-router-dom";
-import {getLogger} from "../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 const COLUMNS_COULD = 3
 

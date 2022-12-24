@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getLogger} from "../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface ICalendarProps {
     setActiveDate: Function

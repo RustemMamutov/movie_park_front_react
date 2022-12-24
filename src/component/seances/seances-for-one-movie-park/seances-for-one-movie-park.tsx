@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import css from "./seances-for-one-movie-park.module.css";
-import SeanceButton from "../seance-button/seance-button";
-import {SeanceInfo} from "../../../scripts/api-methods";
-import {getLogger} from "../../../scripts/log-config";
+import SeanceButton from "component/seances/seance-button/seance-button";
+import {SeanceInfo} from "scripts/api-methods";
+import {getLogger} from "scripts/log-config";
 
 const COLUMNS_COULD = 5
 

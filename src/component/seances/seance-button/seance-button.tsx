@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {SeanceInfo} from "../../../scripts/api-methods";
+import {SeanceInfo} from "scripts/api-methods";
 import {NavigateFunction} from "react-router/dist/lib/hooks";
-import {getLogger} from "../../../scripts/log-config";
+import {getLogger} from "scripts/log-config";
 
 interface ISeanceButtonProps {
     navigation: NavigateFunction;
