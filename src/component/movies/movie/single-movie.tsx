@@ -17,14 +17,12 @@ class SingleMovieClass extends Component<IMovieProps, IMovieState> {
     constructor(props: IMovieProps) {
         super(props);
 
-        this.goToSeances = this.goToSeances.bind(this);
-
         this.state = {
             imgIndex: this.getRandomIndex()
         }
     }
 
-    goToSeances() {
+    goToSeances = () => {
         this.props.navigation(
             `/seance/date/${this.props.activeDateStr}/movie_id/${this.props.movieInfo.movieId}`,
             {

@@ -13,11 +13,9 @@ interface ISeanceButtonProps {
 class SeanceButtonClass extends Component<ISeanceButtonProps> {
     constructor(props: ISeanceButtonProps) {
         super(props);
-
-        this.goToSeance = this.goToSeance.bind(this);
     }
 
-    goToSeance() {
+    goToSeance = () => {
         this.props.navigation(`/seance/id/${this.props.seanceInfo.seanceId}`, {
             state: {seanceInfo: this.props.seanceInfo}
         });

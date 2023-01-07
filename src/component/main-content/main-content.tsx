@@ -21,8 +21,6 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
     constructor(props: IMainContentProps) {
         super(props);
 
-        this.setActiveDate = this.setActiveDate.bind(this)
-
         this.state = {
             X: 0,
             Y: 0,
@@ -46,21 +44,21 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
         }
     }
 
-    handleMouseMove(event: any) {
+    handleMouseMove = (event: any) => {
         this.setState({
             X: event.clientX,
             Y: event.clientY
         });
     }
 
-    setActiveDate(_activeDate: string) {
+    setActiveDate = (_activeDate: string) => {
         logger.debug("setActiveDate", _activeDate)
         this.setState({activeDateStr: _activeDate})
     }
 
     showCalendar() {
         return (
-            <Calendar setActiveDate={this.setActiveDate.bind(this)}
+            <Calendar setActiveDate={this.setActiveDate}
                       activeDate={this.state.activeDateStr}
                       activeDateList={this.state.dateList}/>
         )
@@ -79,7 +77,7 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
 
     render() {
         return (
-            <div className={css.content} onMouseMove={this.handleMouseMove.bind(this)}>
+            <div className={css.content} onMouseMove={this.handleMouseMove}>
                 <div>current active date: {this.state.activeDateStr}</div>
                 {this.showCalendar()}
                 <br/>

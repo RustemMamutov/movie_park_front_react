@@ -10,11 +10,9 @@ interface IPaymentSuccessProps {
 class PaymentSuccessClass extends Component<IPaymentSuccessProps> {
     constructor(props: IPaymentSuccessProps) {
         super(props);
-
-        this.goToStartPage = this.goToStartPage.bind(this);
     }
 
-    goToStartPage() {
+    goToStartPage = () => {
         logger.debug("Go to start page");
         this.props.navigate("/");
     }

@@ -16,15 +16,13 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
     constructor(props: ICalendarProps) {
         super(props);
 
-        this.changeState = this.changeState.bind(this)
-
         this.state = {
             showCalendarMenu: false,
             activeDateList: props.activeDateList
         }
     }
 
-    changeState() {
+    changeState = () => {
         let value = true;
         if (this.state.showCalendarMenu) {
             value = false;
@@ -33,7 +31,7 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
         this.setState({showCalendarMenu: value});
     }
 
-    setActiveDate(_activeDate: string) {
+    setActiveDate = (_activeDate: string) => {
         logger.debug("hide calendarMenu and setActiveDate", _activeDate)
         this.setState({showCalendarMenu: false});
         this.props.setActiveDate(_activeDate)
@@ -46,7 +44,7 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
                     return (
                         <div>
                             <button className='btn btn-success menu-item'
-                                    onClick={this.setActiveDate.bind(this, date)}>
+                                    onClick={() => this.setActiveDate(date)}>
                                 {date}
                             </button>
                         </div>

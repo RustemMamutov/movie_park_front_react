@@ -31,8 +31,6 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     constructor(props: IMoviesProps) {
         super(props);
 
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-
         this.state = {
             X: 0,
             Y: 0,
@@ -53,7 +51,7 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
         };
     }
 
-    handleMouseMove(event: MouseEvent) {
+    handleMouseMove = (event: MouseEvent) => {
         this.setState({
             X: event.clientX,
             Y: event.clientY

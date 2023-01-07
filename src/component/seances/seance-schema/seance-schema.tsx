@@ -26,9 +26,6 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     constructor(props: ISeanceSchemaProps) {
         super(props);
 
-        this.selectThePlace = this.selectThePlace.bind(this);
-        this.buyTickets = this.buyTickets.bind(this);
-
         this.state = {
             seanceId: props.seanceId,
             seanceInfo: {} as SeanceInfo,
@@ -78,7 +75,7 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
         container.appendChild(curvedLine);
     }
 
-    selectThePlace(event: any): void {
+    selectThePlace = (event: any): void => {
         function _changeCircle(_element: Element, _radius: string, _selected: boolean) {
             _element.setAttribute('r', _radius);
             _element.setAttribute('selected', _selected + "");
@@ -111,7 +108,7 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
         }
     }
 
-    buyTickets() {
+    buyTickets = () => {
         let blockPlacesRequestBody = SeanceSchemaUtils.prepareBlockUnblockPlacesRequestBody(
             this.state.selectedPlaceList, this.state.seanceId)
         this.props.navigation('/seance/payment', {

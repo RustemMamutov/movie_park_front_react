@@ -13,11 +13,9 @@ interface IPaymentProps {
 class PaymentClass extends Component<IPaymentProps> {
     constructor(props: IPaymentProps) {
         super(props);
-
-        this.payAndBlockPlaces = this.payAndBlockPlaces.bind(this);
     }
 
-    async payAndBlockPlaces() {
+    payAndBlockPlaces = async () => {
         logger.debug("payment processed");
         logger.debug("Blocking places", this.props.blockPlacesRequestBody);
         await blockPlaces(this.props.blockPlacesRequestBody)
