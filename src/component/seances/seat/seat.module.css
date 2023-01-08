@@ -1,0 +1,43 @@
+.seat {
+    height: 250px;
+    width: 250px;
+    border: 20px solid grey;
+    background: #96f542;
+}
+
+.seat:hover {
+    transform: scale(1.2);
+    background: greenyellow;
+}
+
+.seat.blocked {
+    transform: scale(0.9);
+    border-radius: 50%;
+    border: grey;
+    background: grey;
+}
+
+.seat.selected {
+    transform: scale(1.2);
+    background: lightpink;
+}
+
+.seat.selected:hover {
+    background: pink;
+}
+
+.seat.vip {
+    background: #42cef5;
+}
+
+.seat.vip:hover {
+    background: #4cdef8;
+}
+
+.seat.vip.selected {
+    background: lightpink;
+}
+
+.seat.vip.selected:hover {
+    background: pink;
+}

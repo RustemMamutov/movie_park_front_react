@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import css from './seance-schema.module.css';
 import SeanceSchemaUtils from "./seance-schema-utils";
-import {SELECTED_SEAT_RADIUS, UNSELECTED_SEAT_RADIUS} from "scripts/constants";
 import {getSeanceInfoById, getSeancePlacesInfoById} from "scripts/api-methods";
 import {hallsPlacesInfo, SeanceInfo, SeancePlace} from "scripts/data-structures";
 
 import {NavigateFunction} from "react-router/dist/lib/hooks";
 import {getLogger} from "scripts/log-config";
+import Seat from "component/seances/seat/seat";
 
 interface ISeanceSchemaProps {
     navigation: NavigateFunction;
@@ -38,74 +37,40 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     async componentDidMount() {
         const seanceInfoById = await getSeanceInfoById(this.state.seanceId)
         const seancePlacesInfoList = await getSeancePlacesInfoById(this.state.seanceId)
-        this.setState(
-            {seancePlacesInfoList: seancePlacesInfoList, seanceInfo: seanceInfoById},
-            this.drawAllSeats
-        )
+        this.setState({seancePlacesInfoList: seancePlacesInfoList,
+            seanceInfo: seanceInfoById})
+    }
+
+    updateSelectPlaceList = (placeId: number, seatPrice: number, add: boolean) => {
+        let deltaPrice = seatPrice;
+        if (add) {
+            this.state.selectedPlaceList.add(placeId)
+            logger.info(`place ${placeId} added to selectedPlaceList ${JSON.stringify(this.state.selectedPlaceList)}`)
+        } else {
+            this.state.selectedPlaceList.delete(placeId)
+            deltaPrice = - seatPrice;
+            logger.info(`place ${placeId} removed from selectedPlaceList ${JSON.stringify(this.state.selectedPlaceList)}`)
+        }
+        this.setState(() => { return {totalPrice: this.state.totalPrice + deltaPrice}});
     }
 
     drawAllSeats() {
         const basePrice = this.state.seanceInfo.basePrice;
         const vipPrice = this.state.seanceInfo.vipPrice;
         const hallPlacesInfo = hallsPlacesInfo[this.state.seanceInfo.hallId]
-        const svgns = "http://www.w3.org/2000/svg";
-        const container: any = document.getElementById('seanceGraphArea');
-
+        const result: any[] = []
         this.state.seancePlacesInfoList.forEach((eachPlace: SeancePlace) => {
-            const placeId: number = eachPlace.placeId;
-            const blocked: boolean = eachPlace.blocked;
-            //remove old element
-            const currentElement = container.getElementById(placeId);
-            if (currentElement != null) {
-                currentElement.remove();
-            }
-
-            //create new element
-            const circle = document.createElementNS(svgns, 'circle');
-            const placeInfo = hallPlacesInfo[placeId]
-            SeanceSchemaUtils.createCircleByParameters(circle, placeId, blocked,
-                placeInfo, basePrice, vipPrice);
-            container.appendChild(circle);
+            const placeInfo = hallPlacesInfo[eachPlace.placeId]
+            result.push(<Seat placeId={eachPlace.placeId}
+                              xoffset={250 + 5 * placeInfo.coordX}
+                              yoffset={120 + 5 * placeInfo.coordY}
+                              price={placeInfo.isVip ? vipPrice : basePrice}
+                              scale="8%"
+                              blocked={eachPlace.blocked}
+                              vip={placeInfo.isVip}
+                              selectedHook={this.updateSelectPlaceList}/>)
         })
-
-        const width = container.getBoundingClientRect().width;
-        const height = container.getBoundingClientRect().height;
-        const curvedLine = document.createElementNS(svgns, 'path');
-        SeanceSchemaUtils.createScreen(curvedLine, width, height);
-        container.appendChild(curvedLine);
-    }
-
-    selectThePlace = (event: any): void => {
-        function _changeCircle(_element: Element, _radius: string, _selected: boolean) {
-            _element.setAttribute('r', _radius);
-            _element.setAttribute('selected', _selected + "");
-        }
-
-        const element: any = document.elementsFromPoint(event.clientX, event.clientY)[0];
-        if (element == null) {
-            return;
-        }
-
-        const elementId = element.getAttribute("id")
-        if (element.getAttribute('blocked') === 'true') {
-            logger.debug(`Place id = ${elementId} is blocked.`);
-            return;
-        }
-
-        if (element.classList.contains(css.seat)) {
-            const placePrice = parseInt(element.getAttribute('price'), 10);
-            if (element.getAttribute('selected') === 'true') {
-                logger.debug(`Place id = ${elementId} was selected. Unselect it.`);
-                _changeCircle(element, UNSELECTED_SEAT_RADIUS, false)
-                this.state.selectedPlaceList.delete(elementId)
-                this.setState({totalPrice: this.state.totalPrice - placePrice});
-            } else {
-                logger.debug(`Place id = ${elementId} wasn't selected. Select it.`);
-                _changeCircle(element, SELECTED_SEAT_RADIUS, true)
-                this.state.selectedPlaceList.add(elementId)
-                this.setState({totalPrice: this.state.totalPrice + placePrice});
-            }
-        }
+        return result
     }
 
     buyTickets = () => {
@@ -118,17 +83,12 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
 
     render() {
         return (
-            <div>
+            <div style={{border: "solid black"}}>
                 <div>Seance id: {this.state.seanceId} TOTAL PRICE: {this.state.totalPrice}</div>
                 <div>SELECTED: {SeanceSchemaUtils.selectedPlaceListToString(this.state.selectedPlaceList)}</div>
                 <button type="button" className="btn btn-primary" onClick={this.buyTickets}>Buy tickets</button>
                 <br/>
-                <svg
-                    id="seanceGraphArea" height="800" width="800"
-                    xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-                    onClick={this.selectThePlace}
-                >
-                </svg>
+                {this.drawAllSeats()}
             </div>
         );
     }
