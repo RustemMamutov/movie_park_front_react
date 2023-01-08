@@ -31,11 +31,11 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
             return new Date(`${seanceInfo.seanceDate} ${seanceInfo.startTime}`)
         }
 
-        let sortedSeanceList = Object.assign([], props.seanceList);
+        const sortedSeanceList = Object.assign([], props.seanceList);
         logger.trace("seancesByDateAndMovie before sort:", sortedSeanceList)
         sortedSeanceList.sort(function (a: any, b: any) {
-            let date1 = toDate(a);
-            let date2 = toDate(b);
+            const date1 = toDate(a);
+            const date2 = toDate(b);
             if (date1 > date2) return 1;
             else if (date1 === date2) return 0;
             else return -1;
@@ -51,7 +51,7 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
     }
 
     showSeanceButtons(row: number) {
-        let baseIndex = COLUMNS_COULD * row;
+        const baseIndex = COLUMNS_COULD * row;
         return (
             <div className={css.seances_row}>
                 {COLUMNS_COULD >= 1 ? this.showSeanceButton(baseIndex) : null}
@@ -66,8 +66,8 @@ export class SeancesForOneMoviePark extends Component<ISeancesForOneMovieParkPro
     }
 
     show_seances() {
-        let seanceList = this.state.sortedSeanceList
-        let rowsList: number[] = []
+        const seanceList = this.state.sortedSeanceList
+        const rowsList: number[] = []
         logger.debug("seanceList.length", seanceList.length, "Math", Math.ceil(seanceList.length / COLUMNS_COULD))
         for (let i = 0; i < Math.ceil(seanceList.length / COLUMNS_COULD); i++) {
             rowsList.push(i)

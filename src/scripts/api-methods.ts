@@ -15,7 +15,7 @@ const logger = getLogger("ApiMethods");
 
 function getSeanceInfoById(seanceId: number): Promise<SeanceInfo> {
     logger.debug('Start getting seance info by id:', seanceId);
-    let myUrl = `${getSeanceInfoUrl}/${seanceId}`;
+    const myUrl = `${getSeanceInfoUrl}/${seanceId}`;
 
     return httpClient.get(myUrl)
         .then(response => {
@@ -27,13 +27,13 @@ function getSeanceInfoById(seanceId: number): Promise<SeanceInfo> {
 
 function getSeancePlacesInfoById(seanceId: number): Promise<SeancePlace[]> {
     logger.debug('Start getting seance places info by id:', seanceId);
-    let myUrl = `${getSeancePlacesInfoUrl}/${seanceId}`;
+    const myUrl = `${getSeancePlacesInfoUrl}/${seanceId}`;
     logger.trace('myUrl:', myUrl);
 
     return httpClient.get(myUrl)
         .then(response => {
             logger.trace(`Finish getting seance places info by id = ${seanceId}:`, response)
-            let result: SeancePlace[] = []
+            const result: SeancePlace[] = []
             response.data.forEach((key: SeancePlace) => {
                 result.push(key)
             })
@@ -69,14 +69,14 @@ function blockUnblockPlaces(url: string, requestBody: Object) {
 function getAllSeancesByMovieAndDate(movieId: number, dateAsString: string):
     Promise<Map<string, SeanceInfo[]>> {
     logger.debug('Start getting all seances by movie and date.');
-    let myUrl = `${getSeancesByMovieAndDateUrl}?movieId=${movieId}&date=${dateAsString}`;
+    const myUrl = `${getSeancesByMovieAndDateUrl}?movieId=${movieId}&date=${dateAsString}`;
 
     return httpClient.get(myUrl)
         .then(response => {
             logger.debug("All seances by movie and date:", response.data);
-            let result: Map<string, SeanceInfo[]> = new Map<string, SeanceInfo[]>();
+            const result: Map<string, SeanceInfo[]> = new Map<string, SeanceInfo[]>();
             Object.keys(response.data).forEach((cinemaPark: string) => {
-                let seanceList: SeanceInfo[] = []
+                const seanceList: SeanceInfo[] = []
                 response.data[cinemaPark].forEach((seanceInfo: SeanceInfo) => {
                     seanceList.push(seanceInfo)
                 })
@@ -91,7 +91,7 @@ function getAllMoviesByIdSet(idSet: Set<number>): Promise<Map<number, MovieInfo>
     logger.debug("getAllMoviesByIdSet", idSet);
     const myUrl = `${getAllMoviesByIdSetUrl}`;
 
-    let idList: number[] = []
+    const idList: number[] = []
     idSet.forEach(id => idList.push(id))
     const requestBody = {"movieIdSet": idList}
     logger.trace("requestBody", requestBody)
@@ -99,10 +99,10 @@ function getAllMoviesByIdSet(idSet: Set<number>): Promise<Map<number, MovieInfo>
     return httpClient.post(myUrl, requestBody)
         .then(response => {
             logger.trace("All movies by id set response.data:", response.data);
-            let result: Map<number, MovieInfo> = new Map<number, MovieInfo>();
+            const result: Map<number, MovieInfo> = new Map<number, MovieInfo>();
             Object.keys(response.data).forEach((movieId: string) => {
-                let movieName: string = response.data[movieId].movieName
-                let imgList: string[] = response.data[movieId]["base64Images"].split("|")
+                const movieName: string = response.data[movieId].movieName
+                const imgList: string[] = response.data[movieId]["base64Images"].split("|")
                 result.set(parseInt(movieId), new MovieInfo(parseInt(movieId), movieName, imgList))
             })
             logger.trace("All movies by id set result:", result);
@@ -114,13 +114,12 @@ function getAllMoviesByIdSet(idSet: Set<number>): Promise<Map<number, MovieInfo>
 function getMovieListByPeriod(startPeriodDateStr: string, endPeriodDateStr: string):
     Promise<Map<string, Map<number, string>>> {
     logger.debug(`getMovieListByPeriod by period ${startPeriodDateStr}-${endPeriodDateStr}`);
-    let myUrl = `${getAllMoviesByPeriodUrl}?periodStart=${startPeriodDateStr}&periodEnd=${endPeriodDateStr}`;
+    const myUrl = `${getAllMoviesByPeriodUrl}?periodStart=${startPeriodDateStr}&periodEnd=${endPeriodDateStr}`;
 
     return httpClient.get(myUrl)
         .then(response => {
             logger.trace("Finish getting today movies list:", response.data);
-            let result: Map<string, Map<number, string>> =
-                new Map<string, Map<number, string>>();
+            const result: Map<string, Map<number, string>> = new Map<string, Map<number, string>>();
             Object.keys(response.data).forEach((date: string) => {
                 result.set(date, response.data[date] as Map<number, string>);
             })

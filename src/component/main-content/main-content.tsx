@@ -31,10 +31,10 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
 
     static getDerivedStateFromProps(props: IMainContentProps, state: IMainContentState) {
         if (state.dateList.length === 0) {
-            let dateList: string[] = []
-            let activeDate = GeneralUtils.stringToDate(props.activeDateStr)
+            const dateList: string[] = []
+            const activeDate = GeneralUtils.stringToDate(props.activeDateStr)
             for (let i = 0; i <= 7; i++) {
-                let currDateStr = GeneralUtils.dateToString(activeDate)
+                const currDateStr = GeneralUtils.dateToString(activeDate)
                 dateList.push(currDateStr);
                 activeDate.setDate(activeDate.getDate() + 1)
             }

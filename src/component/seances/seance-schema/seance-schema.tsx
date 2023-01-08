@@ -36,8 +36,8 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     }
 
     async componentDidMount() {
-        let seanceInfoById = await getSeanceInfoById(this.state.seanceId)
-        let seancePlacesInfoList = await getSeancePlacesInfoById(this.state.seanceId)
+        const seanceInfoById = await getSeanceInfoById(this.state.seanceId)
+        const seancePlacesInfoList = await getSeancePlacesInfoById(this.state.seanceId)
         this.setState(
             {seancePlacesInfoList: seancePlacesInfoList, seanceInfo: seanceInfoById},
             this.drawAllSeats
@@ -45,32 +45,32 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     }
 
     drawAllSeats() {
-        let basePrice = this.state.seanceInfo.basePrice;
-        let vipPrice = this.state.seanceInfo.vipPrice;
-        let hallPlacesInfo = hallsPlacesInfo[this.state.seanceInfo.hallId]
-        let svgns = "http://www.w3.org/2000/svg";
-        let container: any = document.getElementById('seanceGraphArea');
+        const basePrice = this.state.seanceInfo.basePrice;
+        const vipPrice = this.state.seanceInfo.vipPrice;
+        const hallPlacesInfo = hallsPlacesInfo[this.state.seanceInfo.hallId]
+        const svgns = "http://www.w3.org/2000/svg";
+        const container: any = document.getElementById('seanceGraphArea');
 
         this.state.seancePlacesInfoList.forEach((eachPlace: SeancePlace) => {
-            let placeId: number = eachPlace.placeId;
-            let blocked: boolean = eachPlace.blocked;
+            const placeId: number = eachPlace.placeId;
+            const blocked: boolean = eachPlace.blocked;
             //remove old element
-            let currentElement = container.getElementById(placeId);
+            const currentElement = container.getElementById(placeId);
             if (currentElement != null) {
                 currentElement.remove();
             }
 
             //create new element
-            let circle = document.createElementNS(svgns, 'circle');
-            let placeInfo = hallPlacesInfo[placeId]
+            const circle = document.createElementNS(svgns, 'circle');
+            const placeInfo = hallPlacesInfo[placeId]
             SeanceSchemaUtils.createCircleByParameters(circle, placeId, blocked,
                 placeInfo, basePrice, vipPrice);
             container.appendChild(circle);
         })
 
-        let width = container.getBoundingClientRect().width;
-        let height = container.getBoundingClientRect().height;
-        let curvedLine = document.createElementNS(svgns, 'path');
+        const width = container.getBoundingClientRect().width;
+        const height = container.getBoundingClientRect().height;
+        const curvedLine = document.createElementNS(svgns, 'path');
         SeanceSchemaUtils.createScreen(curvedLine, width, height);
         container.appendChild(curvedLine);
     }
@@ -81,7 +81,7 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
             _element.setAttribute('selected', _selected + "");
         }
 
-        let element: any = document.elementsFromPoint(event.clientX, event.clientY)[0];
+        const element: any = document.elementsFromPoint(event.clientX, event.clientY)[0];
         if (element == null) {
             return;
         }
@@ -93,7 +93,7 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
         }
 
         if (element.classList.contains(css.seat)) {
-            let placePrice = parseInt(element.getAttribute('price'), 10);
+            const placePrice = parseInt(element.getAttribute('price'), 10);
             if (element.getAttribute('selected') === 'true') {
                 logger.debug(`Place id = ${elementId} was selected. Unselect it.`);
                 _changeCircle(element, UNSELECTED_SEAT_RADIUS, false)
@@ -109,7 +109,7 @@ class SeanceSchemaClass extends Component<ISeanceSchemaProps, ISeanceSchemaState
     }
 
     buyTickets = () => {
-        let blockPlacesRequestBody = SeanceSchemaUtils.prepareBlockUnblockPlacesRequestBody(
+        const blockPlacesRequestBody = SeanceSchemaUtils.prepareBlockUnblockPlacesRequestBody(
             this.state.selectedPlaceList, this.state.seanceId)
         this.props.navigation('/seance/payment', {
             state: {blockPlacesRequestBody: blockPlacesRequestBody}

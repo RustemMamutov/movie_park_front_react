@@ -8,7 +8,7 @@ class SeanceSchemaUtils {
                                                 seanceId: number) {
         logger.trace('Start preparing block places request body.');
 
-        let blockPlacesRequestBody = {
+        const blockPlacesRequestBody = {
             "seanceId": seanceId,
             "placeIdList": [] as number[]
         };

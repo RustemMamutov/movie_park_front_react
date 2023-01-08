@@ -37,16 +37,15 @@ class GeneralUtils {
             return new Date(_dateAsString);
         }
 
-        let formatLowerCase: string = _format.toLowerCase();
-        let formatItems: string[] = formatLowerCase.split(_delimiter);
-        let dateItems: string[] = _dateAsString.split(_delimiter);
-        let monthIndex: number = formatItems.indexOf("mm");
-        let dayIndex: number = formatItems.indexOf("dd");
-        let yearIndex: number = formatItems.indexOf("yyyy");
-        let year: number = parseInt(dateItems[yearIndex]);
-        let month: number = parseInt(dateItems[monthIndex]);
-        let day: number = parseInt(dateItems[dayIndex]);
-        month -= 1;
+        const formatLowerCase: string = _format.toLowerCase();
+        const formatItems: string[] = formatLowerCase.split(_delimiter);
+        const dateItems: string[] = _dateAsString.split(_delimiter);
+        const monthIndex: number = formatItems.indexOf("mm");
+        const dayIndex: number = formatItems.indexOf("dd");
+        const yearIndex: number = formatItems.indexOf("yyyy");
+        const year: number = parseInt(dateItems[yearIndex]);
+        const month: number = parseInt(dateItems[monthIndex]) - 1;
+        const day: number = parseInt(dateItems[dayIndex]);
         return new Date(year, month, day);
     }
 }

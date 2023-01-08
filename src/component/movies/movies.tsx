@@ -45,9 +45,8 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     }
 
     static getDerivedStateFromProps(props: IMoviesProps, state: IMoviesState) {
-        let activeDateMovies = state.movieByDateMap.get(props.activeDateStr) as Map<number, string>
         return {
-            activeDateMovies: activeDateMovies
+            activeDateMovies: state.movieByDateMap.get(props.activeDateStr) as Map<number, string>
         };
     }
 
@@ -70,7 +69,7 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
             activeDateMovies: movieByDateMap.get(this.props.activeDateStr) as Map<number, string>
         })
 
-        let movieIdSet = new Set<number>()
+        const movieIdSet = new Set<number>()
         movieByDateMap.forEach(
             (movieMap, date) => {
                 logger.debug("date", date, "movieMap", movieMap)
@@ -89,7 +88,7 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
 
     showOneMovie(index: number, movieIdList: number[]) {
         if (index + 1 <= movieIdList.length) {
-            let movieInfo = this.state.movieInfoDict.get(movieIdList[index])
+            const movieInfo = this.state.movieInfoDict.get(movieIdList[index])
             if (movieInfo === undefined) {
                 return (
                     <h3>Данные ещё не прогрузились</h3>
@@ -110,12 +109,12 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
                 </div>
             )
         }
-        let movieIdList = Object.keys(this.state.activeDateMovies).map(
+        const movieIdList = Object.keys(this.state.activeDateMovies).map(
             function (key) {
                 return parseInt(key)
             }
         )
-        let rows_array = []
+        const rows_array = []
         for (let i = 0; i < Math.ceil(movieIdList.length / 3); i++) {
             rows_array.push(i)
         }
@@ -123,7 +122,7 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
         if (movieIdList.length > 0) {
             return (
                 rows_array.map(row => {
-                        let baseIndex = COLUMNS_COULD * row;
+                        const baseIndex = COLUMNS_COULD * row;
                         return (
                             <div className={css.movies_row}>
                                 {this.showOneMovie(baseIndex, movieIdList)}
