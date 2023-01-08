@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {getLogger} from "scripts/log-config";
+import CalendarMenu from "./calendar-menu/calendar-menu";
 
 interface ICalendarProps {
     setActiveDate: Function
@@ -40,16 +41,10 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
     showCalendarMenu() {
         if (this.state.showCalendarMenu) {
             return (
-                this.state.activeDateList.map(date => {
-                    return (
-                        <div>
-                            <button className='btn btn-success menu-item'
-                                    onClick={() => this.setActiveDate(date)}>
-                                {date}
-                            </button>
-                        </div>
-                    )
-                })
+                <div className='menu'>
+                    <CalendarMenu activeDateList={this.state.activeDateList}
+                                  setActiveDate={this.setActiveDate}/>
+                </div>
             )
         }
     }
@@ -57,12 +52,11 @@ export class Calendar extends Component<ICalendarProps, ICalendarState> {
     render() {
         return (
             <div>
+                <div>current active date: {this.props.activeDate}</div>
                 <button type="button" className="btn btn-success" onClick={this.changeState}>
                     {this.props.activeDate}
                 </button>
-                <div className='menu'>
-                    {this.showCalendarMenu()}
-                </div>
+                {this.showCalendarMenu()}
             </div>
         )
     }

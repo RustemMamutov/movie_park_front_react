@@ -56,14 +56,6 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
         this.setState({activeDateStr: _activeDate})
     }
 
-    showCalendar() {
-        return (
-            <Calendar setActiveDate={this.setActiveDate}
-                      activeDate={this.state.activeDateStr}
-                      activeDateList={this.state.dateList}/>
-        )
-    }
-
     showContent() {
         if (this.state.activeDateStr === undefined) {
             return null;
@@ -78,8 +70,9 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
     render() {
         return (
             <div className={css.content} onMouseMove={this.handleMouseMove}>
-                <div>current active date: {this.state.activeDateStr}</div>
-                {this.showCalendar()}
+                <Calendar setActiveDate={this.setActiveDate}
+                          activeDate={this.state.activeDateStr}
+                          activeDateList={this.state.dateList}/>
                 <br/>
                 <b>MyMainContent. Coordinates X: {this.state.X} Y: {this.state.Y}</b>
                 {this.showContent()}
