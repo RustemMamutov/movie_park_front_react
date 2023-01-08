@@ -51,10 +51,10 @@ class MoviesClass extends Component<IMoviesProps, IMoviesState> {
     }
 
     handleMouseMove = (event: MouseEvent) => {
-        this.setState({
-            X: event.clientX,
-            Y: event.clientY
-        });
+        // this.setState({
+        //     X: event.clientX,
+        //     Y: event.clientY
+        // });
     }
 
     async componentDidMount() {

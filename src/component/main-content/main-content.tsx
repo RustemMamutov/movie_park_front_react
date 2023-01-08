@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, MouseEvent} from 'react';
 import css from './main-content.module.css';
 import Movies from "component/movies/movies";
 import GeneralUtils from "scripts/general-utils";
@@ -44,11 +44,11 @@ class MainContentClass extends Component<IMainContentProps, IMainContentState> {
         }
     }
 
-    handleMouseMove = (event: any) => {
-        this.setState({
-            X: event.clientX,
-            Y: event.clientY
-        });
+    handleMouseMove= (event: MouseEvent) => {
+        // this.setState({
+        //     X: event.clientX,
+        //     Y: event.clientY
+        // });
     }
 
     setActiveDate = (_activeDate: string) => {
